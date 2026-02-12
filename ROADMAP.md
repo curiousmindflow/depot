@@ -3,12 +3,13 @@
 1. **Milestone 1: Infrastructure**
 
 - 📋 Backend
-  - 📋 Server (Axum)
-  - 📋 SPA serving endpoint
-  - 📋 Fallback endpoint
+  - ✅ Server (Axum)
+  - ✅ SPA serving endpoint
+  - ✅ API Ping endpoint
+  - ✅ API fallback endpoint
   - 📋 Endpoint integration tests
 - 📋 Frontend
-  - 📋 SPA loading (Svelete)
+  - ✅ SPA loading (Svelete)
   - 📋 End to end test (Playwright)
 - 📋 DevOps
   - 📋 Basic CI/CD
@@ -17,7 +18,7 @@
 1. **Milestone 2: Fake visualisation**
 
 - 📋 Backend
-  - 📋 Data access abstraction
+  - 📋 Data access abstraction (SeaORM)
   - 📋 Fake data storage
   - 📋 Endpoint integration tests
 - 📋 Frontend
