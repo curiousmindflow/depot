@@ -57,6 +57,8 @@ jobs:
           tool: cargo-nextest
       - name: Discover tests
         run: cargo nextest list
+      - run: pwd
+      - run: ls -al
       - name: Run tests
         run: cargo nextest run --no-fail-fast
 
