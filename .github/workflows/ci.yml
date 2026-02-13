@@ -35,7 +35,7 @@ jobs:
       - run: cargo clippy --all-targets --all-features -- -D warnings
 
   backend_build:
-    name: Build (debug)
+    name: Backend Build (debug)
     runs-on: ubuntu-latest
     needs: [backend_fmt, backend_lint]
     steps:
@@ -45,7 +45,7 @@ jobs:
       - run: cargo build --all-features
 
   backend_test:
-    name: Run Tests
+    name: Backend Tests
     needs: [backend_build]
     runs-on: ubuntu-latest
     steps:
@@ -61,7 +61,7 @@ jobs:
         run: cargo nextest run --no-fail-fast
 
   frontend_lint:
-    name: Lint
+    name: Frontend lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -81,7 +81,7 @@ jobs:
         working-directory: depot
 
   frontend_test:
-    name: Test
+    name: Frontend Tests
     needs: [frontend_lint, backend_test]
     runs-on: ubuntu-latest
     steps:
