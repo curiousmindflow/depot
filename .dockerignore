@@ -1,0 +1,6 @@
+target/
+depot/node_modules/
+depot/dist/
+depot/playwright-report/
+depot/test-results/
+.git/

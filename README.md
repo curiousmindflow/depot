@@ -1,6 +1,6 @@
 # Depot
 
-[![CI](https://github.com/curiousmindflow/troc/actions/workflows/ci.yml/badge.svg)](https://github.com/curiousmindflow/troc/actions/workflows/ci.yml)
+[![CI](https://github.com/curiousmindflow/depot/actions/workflows/ci.yml/badge.svg)](https://github.com/curiousmindflow/depot/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0%2FMIT-blue)](LICENSE-APACHE)
 
 ## About Depot
