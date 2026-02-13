@@ -4,17 +4,14 @@ use tower_http::{
     trace::TraceLayer,
 };
 
-pub fn create_app() -> Router {
-    let dist_path = std::env::var("DIST_PATH")
-        .unwrap_or_else(|_| format!("{}/depot/dist", env!("CARGO_MANIFEST_DIR")));
-
+pub fn create_app(dist_path: &str) -> Router {
     let api_routes = Router::new()
         .route("/ping", get(ping))
         .layer(TraceLayer::new_for_http())
         .fallback(api_404);
 
     Router::new().nest("/api", api_routes).fallback_service(
-        ServeDir::new(&dist_path)
+        ServeDir::new(dist_path)
             .not_found_service(ServeFile::new(format!("{}/index.html", dist_path))),
     )
 }
