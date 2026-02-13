@@ -2,18 +2,18 @@
 
 1. **Milestone 1: Infrastructure**
 
-- 📋 Backend
+- ✅ Backend
   - ✅ Server (Axum)
   - ✅ SPA serving endpoint
   - ✅ API Ping endpoint
   - ✅ API fallback endpoint
-  - 📋 Endpoint integration tests
-- 📋 Frontend
+  - ✅ Endpoint integration tests
+- ✅ Frontend
   - ✅ SPA loading (Svelete)
-  - 📋 End to end test (Playwright)
-- 📋 DevOps
-  - 📋 Basic CI/CD
-  - 📋 Auto Deploy to Railway
+  - ✅ End to end test (Playwright)
+- ✅ DevOps
+  - ✅ Basic CI/CD
+  - ✅ Auto Deploy to Railway
 
 1. **Milestone 2: Fake visualisation**
 
