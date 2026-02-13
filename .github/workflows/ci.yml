@@ -13,6 +13,51 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
+  frontend_lint:
+    name: Frontend lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: depot/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: depot
+      - name: Check Prettier formatting
+        run: npx prettier --check .
+        working-directory: depot
+      - name: Svelte check & TypeScript
+        run: npm run check
+        working-directory: depot
+
+  frontend_build:
+    name: Frontend Build
+    needs: [frontend_lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: depot/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: depot
+      - name: Build frontend
+        run: npm run build
+        working-directory: depot
+      - name: Upload dist dir
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: dist_dir
+          path: depot/dist/
+          retention-days: 1
+
   backend_fmt:
     name: Backend format check
     runs-on: ubuntu-latest
@@ -46,46 +91,28 @@ jobs:
 
   backend_test:
     name: Backend Tests
-    needs: [backend_build]
+    needs: [backend_build, frontend_build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+      - name: Download frontend dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist_dir
+          path: depot/dist/
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-nextest
       - name: Discover tests
         run: cargo nextest list
-      - run: pwd
-      - run: ls -al
-      - run: ls -al /home/runner/work/depot/depot/depot/**
       - name: Run tests
         run: cargo nextest run --no-fail-fast
 
-  frontend_lint:
-    name: Frontend lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: depot/package-lock.json
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: depot
-      - name: Check Prettier formatting
-        run: npx prettier --check .
-        working-directory: depot
-      - name: Svelte check & TypeScript
-        run: npm run check
-        working-directory: depot
-
   frontend_test:
     name: Frontend Tests
-    needs: [frontend_lint, backend_test]
+    needs: [backend_build, frontend_build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -99,26 +126,21 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
         working-directory: depot
-      - name: Build frontend
-        run: npm run build
-        working-directory: depot
+      - name: Download frontend dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist_dir
+          path: depot/dist/
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
         working-directory: depot
       - name: E2E tests
         run: npm run e2e
         working-directory: depot
-      - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: depot/playwright-report/
-          retention-days: 7
 
   deploy:
     name: Deploy
-    needs: [frontend_test]
+    needs: [backend_test, frontend_test]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
